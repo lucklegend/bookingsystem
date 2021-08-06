@@ -1,0 +1,63 @@
+a.brand-logo img{
+    height: auto;
+    width: 190px!important;
+}
+aside.mdc-drawer {
+    background-color: rgba(63,31,1,1)!important;
+    /* background: none!important; */
+}
+#loginForm input{
+    color: rgba(63,31,1,1)!important;
+}
+#loginForm .submitBtn-redish{
+    background-color: rgba(63,31,1,1)!important;
+}
+#loginPage{
+    background: url('../images/pages/login/login-bg.jpg');
+}
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.alert {
+    position: relative;
+    padding: .75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+.full-width{
+    width: 100%;
+}
+.table thead tr th:first-child, .table thead tr td:first-child {
+    padding:10px!important;
+}
+.table thead tr th, .table thead tr td {
+    padding: 8px 10px!important;
+}
+
+select.form-control:not([size]):not([multiple]) {
+    height: calc(2.25rem + 2px);
+}
+.form-group {
+    margin-bottom: .1rem;
+}
+#select_category.form-control {
+    display: block;
+    width: 100%;
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .2rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+#select_category option{
+    padding: .375rem .75rem;;
+}
+.spacer{
+    height: 15px;
+}
