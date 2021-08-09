@@ -9,16 +9,18 @@ $user_type = $getUserData['user_type'];
 $name = $getUserData['name'];
 $username = $getUserData['username'];
 $usertype = $getUserData['user_type'];
+$pageURL = str_replace(".php","",$_SERVER['PHP_SELF']);
 
 checkIfLogIn($id, $routes);
+checkIfAdmin($id, $usertype, $routes);
 
-//PAGINATION
+// PAGINATION
 $pagesize = 20;
 if(isset($_GET['page'])){$currentpage = $_GET['page'];}else{$currentpage = 1;}
 $recordstart = ($currentpage-1) * $pagesize;
 $sr = $recordstart + 1;
 
-function pageLinks ($totalpages, $currentpage, $pagesize) {
+function pageLinks ($totalpages, $currentpage, $pagesize, $sortLinks) {
 	$page = 1;
 	$pageLinks = "";
   $pageURL = str_replace(".php","",$_SERVER['PHP_SELF']);
@@ -36,7 +38,7 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
               <nav aria-label="...">
                 <ul class="pagination">
                   <li class="page-item '.$disabled.'">
-                    <a class="page-link" href="'.$pageURL.'?page='.$pagePrev.'&crypted='.$_GET['crypted'].'">Previous</a>
+                    <a class="page-link" href="'.$pageURL.'?page='.$pagePrev.'&crypted='.$_GET['crypted'].$sortLinks.'">Previous</a>
                   </li>
   ';
   // Proceed on printing the page numbers
@@ -55,14 +57,7 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
       }else{
         // print the other page numbers
         $pageLinks .= '<li class="page-item">
-            <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'];
-        if ($_GET['sort'] != '')	{
-          $pageLinks .= "&sort=" . $_GET['sort'];
-        }
-        if ($_GET['mode'] != ''){
-          $pageLinks .= "&mode=" . $_GET['mode'];
-        }
-
+            <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'].$sortLinks;
         $pageLinks .= '">'.$page.'</a></li>';
       }
     }
@@ -80,14 +75,7 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
         }else{
           // print the other page numbers
           $pageLinks .= '<li class="page-item">
-              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'];
-          if ($_GET['sort'] != '')	{
-            $pageLinks .= "&sort=" . $_GET['sort'];
-          }
-          if ($_GET['mode'] != ''){
-            $pageLinks .= "&mode=" . $_GET['mode'];
-          }
-  
+              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'].$sortLinks;
           $pageLinks .= '">'.$page.'</a></li>';
         }                
       }
@@ -95,20 +83,20 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
       $pageLinks .='
               <li class="page-item"> <a class="page-link"> ... </a></li>
               <li class="page-item">
-                <a class="page-link" href="'.$pageURL.'?page='.$secondLastPage.'&crypted='.$_GET['crypted'].'">'.$secondLastPage.'</a>
+                <a class="page-link" href="'.$pageURL.'?page='.$secondLastPage.'&crypted='.$_GET['crypted'].$sortLinks.'">'.$secondLastPage.'</a>
               </li>
               <li class="page-item">
-                <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].'">'.$totalpages.'</a>
+                <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].$sortLinks.'">'.$totalpages.'</a>
               </li>
       ';
     }
     elseif($currentpage > 4 && $currentpage < $totalpages - 4){
       //print page 1 and 2 and ...
       $pageLinks .= '<li class="page-item">
-              <a class= "page-link" href="'.$pageURL.'?page=1&crypted='.$_GET['crypted'].'">1</a>
+              <a class= "page-link" href="'.$pageURL.'?page=1&crypted='.$_GET['crypted'].$sortLinks.'">1</a>
             </li>
             <li class="page-item">
-              <a class= "page-link" href="'.$pageURL.'?page=2&crypted='.$_GET['crypted'].'">2</a>
+              <a class= "page-link" href="'.$pageURL.'?page=2&crypted='.$_GET['crypted'].$sortLinks.'">2</a>
             </li>
             <li class="page-item">
               <a class= "page-link">...</a>
@@ -127,14 +115,7 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
         }else{
           // print the other page numbers
           $pageLinks .= '<li class="page-item">
-              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'];
-          if ($_GET['sort'] != '')	{
-            $pageLinks .= "&sort=" . $_GET['sort'];
-          }
-          if ($_GET['mode'] != ''){
-            $pageLinks .= "&mode=" . $_GET['mode'];
-          }
-  
+              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'].$sortLinks;
           $pageLinks .= '">'.$page.'</a></li>';
         }                
       }
@@ -142,19 +123,19 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
       $pageLinks .='
               <li class="page-item"> <a class="page-link"> ... </a></li>
               <li class="page-item">
-                <a class="page-link" href="'.$pageURL.'?page='.$secondLastPage.'&crypted='.$_GET['crypted'].'">'.$secondLastPage.'</a>
+                <a class="page-link" href="'.$pageURL.'?page='.$secondLastPage.'&crypted='.$_GET['crypted'].$sortLinks.'">'.$secondLastPage.'</a>
               </li>
               <li class="page-item">
-                <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].'">'.$totalpages.'</a>
+                <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].$sortLinks.'">'.$totalpages.'</a>
               </li>
       ';      
     }
     else{
       $pageLinks .= '<li class="page-item">
-          <a class= "page-link" href="'.$pageURL.'?page=1&crypted='.$_GET['crypted'].'">1</a>
+          <a class= "page-link" href="'.$pageURL.'?page=1&crypted='.$_GET['crypted'].$sortLinks.'">1</a>
         </li>
         <li class="page-item">
-          <a class= "page-link" href="'.$pageURL.'?page=2&crypted='.$_GET['crypted'].'">2</a>
+          <a class= "page-link" href="'.$pageURL.'?page=2&crypted='.$_GET['crypted'].$sortLinks.'">2</a>
         </li>
         <li class="page-item">
           <a class= "page-link">...</a>
@@ -173,14 +154,7 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
         }else{
           // print the other page numbers
           $pageLinks .= '<li class="page-item">
-              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'];
-          if ($_GET['sort'] != '')	{
-            $pageLinks .= "&sort=" . $_GET['sort'];
-          }
-          if ($_GET['mode'] != ''){
-            $pageLinks .= "&mode=" . $_GET['mode'];
-          }
-  
+              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'].$sortLinks;
           $pageLinks .= '">'.$page.'</a></li>';
         }                
       }  
@@ -197,10 +171,10 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
 
   $pageLinks .='
           <li class="page-item '.$nextDisabled.'">
-             <a class="page-link" href="'.$pageURL.'?page='.$pageNext.'&crypted='.$_GET['crypted'].'">Next</a>
+             <a class="page-link" href="'.$pageURL.'?page='.$pageNext.'&crypted='.$_GET['crypted'].$sortLinks.'">Next</a>
           </li>
           <li class="page-item '.$nextDisabled.'">
-             <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].'">Last</a>
+             <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].$sortLinks.'">Last</a>
           </li>
         </ul>
       </nav>
@@ -212,6 +186,8 @@ function pageLinks ($totalpages, $currentpage, $pagesize) {
 		return $pageLinks;
 	}
 }
+// END OF PAGINATION
+
 
 // Declare the header title.
 $headerTitle = 'Users Section';
@@ -223,10 +199,8 @@ include_once('../../layout/header.php');
   <div class="body-wrapper">
     <!-- sidebar -->
     <?php
-    $parentSub = 'system'; 
-    if($amenitiesActive){
-      echo '<script>console.log("wow amenities open");</script>';
-    }
+    $parentSub = 'system';
+
     if($usertype == 1){
       include_once('../../layout/sidebar-admin.php');
     }else{
@@ -260,10 +234,10 @@ include_once('../../layout/header.php');
                       
                     </script>
                     <?php
-                      if(isset($_GET['msg'])){
+                      if(isset($_GET['msg']) && $_GET['msg'] == 'delete'){
                     ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                      <strong>Success!</strong> Data[s] is now deleted.
+                      <strong>Success!</strong> User is deleted.
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
@@ -274,7 +248,7 @@ include_once('../../layout/header.php');
                     <div class="container-fluid">
                       <div class="form-group">
                         <div class="btn-toolbar" role="toolbar" aria-label="Basic example">
-                          <a href="#" class="btn btn-success">Add New User</a> &nbsp;&nbsp;
+                          <a href="<?php echo $routes['usersCreate'];?>" class="btn btn-success">Add New User</a> &nbsp;&nbsp;
                           <form method="get" action="<?php echo $routes['users'];?>" name="formsearch">
                             <div class="input-group mb-0 flex-nowrap">
                               <?php
@@ -299,6 +273,64 @@ include_once('../../layout/header.php');
                     </div>
                     <div class="spacer"></div>
                     <!-- START OF TABLE -->
+                    <?php
+                    //for arrow settings
+                    $sortUserType = '';
+                    $sortUserName = '';
+                    $sortName = '';
+
+                    // mode of sorting
+                    if(!isset($_GET['mode'])){
+                      $mode = 'ASC';
+                    }
+
+                    // SET THE SORT URL(s)
+                    $sortURL = $pageURL.'?crypted='.$_GET['crypted'];
+
+                    // FOR PAGINATION
+                    $sortLinks = '';
+                    $more = '';
+
+                    if(isset($_GET['sort'])){
+                      $more = 'ORDER BY '.$_GET['sort'].' '.$_GET['mode'];
+                      
+                      if($_GET['sort'] == 'user_type' AND $_GET['mode']=='ASC'){
+                        $mode = 'DESC';
+                        $sortUserType = '-up';
+                        $sortUserName = '';
+                        $sortName = '';
+                      }else if($_GET['sort'] == 'user_type' AND $_GET['mode']=='DESC'){
+                        $mode = 'ASC';
+                        $sortUserType = '-down';
+                        $sortUserName = '';
+                        $sortName = '';
+                      }else if($_GET['sort'] == 'username' && $_GET['mode']=='ASC'){
+                        $mode = 'DESC';
+                        $sortUserName = '-up';
+                        $sortUserType = '';
+                        $sortName = '';
+                      }else if($_GET['sort'] == 'username' && $_GET['mode']=='DESC'){
+                        $mode = 'ASC';
+                        $sortUserName = '-down';
+                        $sortUserType = '';
+                        $sortName = '';
+                      }else if($_GET['sort'] == 'name' && $_GET['mode']=='ASC'){
+                        $mode = 'DESC';
+                        $sortName = '-up';
+                        $sortUserType = '';
+                        $sortUserName = '';
+                      }elseif($_GET['sort'] == 'name' && $_GET['mode']=='DESC'){
+                        $mode = 'ASC';
+                        $sortName = '-down';
+                        $sortUserType = '';
+                        $sortUserName = '';
+                      }else{
+                       
+                      }
+                      $sortLinks = '&sort='.$_GET['sort'].'&mode='.$_GET['mode'];
+                    }
+                    
+                    ?>
                     <div class="table-responsive">
                       <form name="form1" method="post">
                         <table class="table table-hoverable" >
@@ -307,9 +339,21 @@ include_once('../../layout/header.php');
                               <th class="text-center" width="3%">
                                 #
                               </th>
-                              <th class="text-center" >User Type</th>
-                              <th class="text-center" >Username</th>
-                              <th class="text-center" >Name</th>
+                              <th class="text-center" >
+                                <a href="<?php echo $sortURL.'&sort=user_type&mode='.$mode;?>">
+                                  User Type <i class="fa fa-sort<?php echo $sortUserType;?>"></i> 
+                                </a>
+                              </th>
+                              <th class="text-center" >
+                                <a href="<?php echo $sortURL.'&sort=username&mode='.$mode;?>">
+                                  Username <i class="fa fa-sort<?php echo $sortUserName;?>"></i>
+                                </a>
+                              </th>  
+                              <th class="text-center" >
+                                <a href="<?php echo $sortURL.'&sort=name&mode='.$mode;?>">
+                                  Name <i class="fa fa-sort<?php echo $sortName;?>"></i>
+                                </a>
+                              </th>
                               <th class="text-center" >Action</th>
                             </tr>
                           </thead>
@@ -349,8 +393,13 @@ include_once('../../layout/header.php');
                                           <td class='text-center'>".$row['username']."</td>
                                           <td class='text-center'>".$row['name']."</td>
                                           <td class='text-center'> 
-                                            <a href=facility.php?crypted=".$_GET['crypted']."&page=user&edit=".$row['id'].">Edit</a> | 
-                                            <a href=facility.php?crypted=".$_GET['crypted']."&page=user&dele=".$row['id']." onClick=\"return confirm('This will delete the user from System, Are you sure ?');\">Delete</a> 
+                                            <a class='btn btn-warning btn-sm' href=facility.php?crypted=".$_GET['crypted']."&page=user&edit=".$row['id'].">Edit</a> | 
+                                            <a class='btn btn-danger btn-sm' 
+                                              href=".$routes['usersDelete']."&dele=".$row['id']." 
+                                              onClick=\"return confirm('This will delete the user from System, Are you sure ?');\">
+                                              Delete
+                                            </a> 
+                                            
                                           </td>
                                         </tr>
                                   ";
@@ -365,8 +414,9 @@ include_once('../../layout/header.php');
                               <td colspan="5">
                               <?php
                                 $totalpages = ceil($num_pagination / $pagesize);
+
                                 if ($totalpages >= 1) {
-                                echo "<font color='black'>" . pageLinks($totalpages,$currentpage, $pagesize) . "</font>";
+                                echo "<font color='black'>" . pageLinks($totalpages,$currentpage, $pagesize, $sortLinks) . "</font>";
                                 }
                               ?>
                               </td>

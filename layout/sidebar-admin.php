@@ -25,9 +25,7 @@
   var ahrefs = document.body.getElementsByClassName('mdc-drawer-link active');
   for(var i =0; i<ahrefs.length; i++){
     ahrefs.classList.remove('active');
-    console.log('remove');
   }
-  console.log(ahrefs);
 </script>
 <aside class="mdc-drawer mdc-drawer--dismissible mdc-drawer--open">
   <div class="mdc-drawer__header">

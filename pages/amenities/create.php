@@ -11,6 +11,7 @@ $username = $getUserData['username'];
 $usertype = $getUserData['user_type'];
 
 checkIfLogIn($id, $routes);
+checkIfAdmin($id, $usertype, $routes);
 
 // ADD Amenities
 if(isset($_POST['addnew'])) {

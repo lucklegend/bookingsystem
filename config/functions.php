@@ -39,5 +39,25 @@ function checkIfLogIn($id, $routes){
 	}
 }
 
+function checkIfAdmin($id, $userType, $routes){
+    if($userType != 1){
+        session_unset();
+        session_destroy();
+        echo "<script type=text/javascript language=javascript> window.location.href ='".$routes['login']."'; </script> ";
+        exit();
+    }
+    if(time()-$_SESSION["last_activity"] >1200)  {
+        session_unset();
+        session_destroy();
+        echo "<script type=text/javascript language=javascript> window.location.href ='".$routes['login']."'; </script> ";
+    }else{
+        $_SESSION["last_activity"] = time();
+    }
+
+	if($_SESSION['basic_is_logged_in'] != $id or $_SESSION['basic_is_logged_in'] ==''){
+        echo "<script type=text/javascript language=javascript> window.location.href ='".$routes['login']."'; </script> ";
+        exit();     
+	}
+}
 
 ?>

@@ -61,3 +61,6 @@ select.form-control:not([size]):not([multiple]) {
 .spacer{
     height: 15px;
 }
+.row{
+    margin-bottom: 10px;
+}

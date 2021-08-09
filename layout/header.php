@@ -16,6 +16,9 @@
   <!-- Plugins Bootstrap -->
   <link rel="stylesheet" href="<?php echo $routes['URL'];?>assets/css/bootstrap/bootstrap.min.css">
   <!-- End of Plugins Bootstrap -->
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="<?php echo $routes['URL'];?>assets/css/fontawesome/css/all.min.css">
+  <!-- End of FontAwesome -->
   <!-- Layout styles -->
   <link rel="stylesheet" href="<?php echo $routes['URL'];?>assets/css/demo/style.css">
   <link rel="stylesheet" href="<?php echo $routes['URL'];?>assets/css/custom.css">
