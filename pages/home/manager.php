@@ -21,7 +21,7 @@ $sr = $recordstart + 1;
 
 
 // Declare the header title.
-$headerTitle = 'Users Section';
+$headerTitle = 'Managers Section';
 
 //ADD HEADER HERE
 include_once('../../layout/header.php'); 
@@ -30,7 +30,7 @@ include_once('../../layout/header.php');
   <div class="body-wrapper">
     <!-- sidebar -->
     <?php
-    $parentSub = 'system';
+    $parentSub = 'home';
 
     if($user_type == 1){
       include_once('../../layout/sidebar-admin.php');
@@ -85,7 +85,7 @@ include_once('../../layout/header.php');
                               <?php
                                 if(isset($_GET['search'])){
                                   $search = $_GET['search']; 
-                                  $search_option = "and (username like '%".$_GET['search']."%' or name like '%".$_GET['search']."%' or email like '%".$_GET['search']."%')";
+                                  $search_option = "AND (username like '%".$_GET['search']."%' or name like '%".$_GET['search']."%' or email like '%".$_GET['search']."%')";
                                 }else{
                                   $search = '';
                                   $search_option = "";
@@ -125,12 +125,12 @@ include_once('../../layout/header.php');
                     if(isset($_GET['sort'])){
                       $more = 'ORDER BY '.$_GET['sort'].' '.$_GET['mode'];
                       
-                      if($_GET['sort'] == 'user_type' AND $_GET['mode']=='ASC'){
+                      if($_GET['sort'] == 'last_logged_in' AND $_GET['mode']=='ASC'){
                         $mode = 'DESC';
                         $sortUserType = '-up';
                         $sortUserName = '';
                         $sortName = '';
-                      }else if($_GET['sort'] == 'user_type' AND $_GET['mode']=='DESC'){
+                      }else if($_GET['sort'] == 'last_logged_in' AND $_GET['mode']=='DESC'){
                         $mode = 'ASC';
                         $sortUserType = '-down';
                         $sortUserName = '';
@@ -171,8 +171,8 @@ include_once('../../layout/header.php');
                                 #
                               </th>
                               <th class="text-center" >
-                                <a href="<?php echo $sortURL.'&sort=user_type&mode='.$mode;?>">
-                                  User Type <i class="fa fa-sort<?php echo $sortUserType;?>"></i> 
+                                <a href="<?php echo $sortURL.'&sort=last_logged_in&mode='.$mode;?>">
+                                  Last Login <i class="fa fa-sort<?php echo $sortUserType;?>"></i> 
                                 </a>
                               </th>
                               <th class="text-center" >
@@ -191,7 +191,7 @@ include_once('../../layout/header.php');
                           <tbody>
                             <?php
 
-                              $query = "SELECT * FROM user_account WHERE active ='1' $search_option $more";
+                              $query = "SELECT * FROM user_account WHERE active ='1' AND user_type = '1' $search_option $more";
                               $result = mysqli_query($conn, $query);
                               //for pagination
 				                      $num_pagination = mysqli_num_rows($result);
@@ -220,7 +220,7 @@ include_once('../../layout/header.php');
                                 while($row = mysqli_fetch_array($result)) {
                                   echo "<tr class='text-center'>
                                           <td class='text-center'>".$sr."</td>
-                                          <td class='text-center'>".shoUserType($row['user_type'])."</td>
+                                          <td class='text-center'>".$row['last_logged_in']."</td>
                                           <td class='text-center'>".$row['username']."</td>
                                           <td class='text-center'>".$row['name']."</td>
                                           <td class='text-center'> 

@@ -16,6 +16,7 @@ $routes = [
     'usersEdit'=> $mainURL.'pages/users/edit?crypted='.$_GET['crypted'],
     'usersCreate'=> $mainURL.'pages/users/create?crypted='.$_GET['crypted'],
     'usersDelete'=> $mainURL.'pages/users/delete?crypted='.$_GET['crypted'],
+    'usersManager'=> $mainURL.'pages/home/manager?crypted='.$_GET['crypted'],
     'calendar'=> $mainURL.'pages/calendar/view?crypted='.$_GET['crypted'],
 ];
 ?>

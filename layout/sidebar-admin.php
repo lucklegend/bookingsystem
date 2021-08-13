@@ -16,6 +16,8 @@
   function showSubMenu($linkName,$parentSub){
     if($parentSub == $linkName){
       echo 'style="display:block;"';
+    }else{
+      echo '';
     }
   }
   
@@ -41,7 +43,7 @@
     <div class="mdc-list-group">
       <nav class="mdc-list mdc-drawer-menu">
         <div class="mdc-list-item mdc-drawer-item">
-          <a class="mdc-drawer-link <?php if($explode[$countExplode -1] == 'index.php'){echo 'active';}?>" href="<?php echo $routes['home'];?>?crypted=<?php echo $_GET['crypted'];?>">
+          <a class="mdc-drawer-link <?php if($explode[$countExplode -1] == 'index.php'){echo 'active';} getActive('home',$linkPage);?>" href="<?php echo $routes['home'];?>?crypted=<?php echo $_GET['crypted'];?>">
             <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">home</i>
             Home
           </a>

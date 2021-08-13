@@ -8,10 +8,9 @@ $id = $getUserData['id'];
 $user_type = $getUserData['user_type'];
 $name = $getUserData['name'];
 $username = $getUserData['username'];
-$usertype = $getUserData['user_type'];
 
 checkIfLogIn($id, $routes);
-checkIfAdmin($id, $usertype, $routes);
+checkIfAdmin($id, $user_type, $routes);
 
 if(isset($_GET['code'])){
   $code = $_GET['code'];
@@ -115,7 +114,7 @@ include_once('../../layout/header.php');
     //for showing the buttons on sidebar
     $parentSub = 'manage content'; 
 
-    if($usertype == 1){
+    if($user_type == 1){
       include_once('../../layout/sidebar-admin.php');
     }else{
       include_once('../../layout/sidebar.php');

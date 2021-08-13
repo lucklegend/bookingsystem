@@ -60,4 +60,219 @@ function checkIfAdmin($id, $userType, $routes){
 	}
 }
 
+function countActiveUsers($user_type, $conn){
+    $query = "SELECT COUNT(*) AS countUsers FROM user_account WHERE active = '1' AND user_type = '".$user_type."'";
+    $query2 = "SELECT COUNT(*) AS countAll FROM user_account WHERE active = '1 '";
+    $row = mysqli_fetch_array(mysqli_query($conn, $query));
+    $row2 = mysqli_fetch_array(mysqli_query($conn, $query2));
+    $data = array();
+    $countUsers = $row['countUsers'];
+    $countAll = $row2['countAll'];
+    $percent = ($countUsers / $countAll) * 100;
+    $rounded = round($percent, 2);
+    $data = [
+        'countUsers' =>$countUsers,
+        'percentage' =>$rounded
+    ];
+    return $data;
+}
+
+function findBooking($year, $conn){
+    $query = "SELECT COUNT(*) AS `totalBook`, `month` 
+            FROM my_booking 
+            WHERE `year` = ".$year." AND `status` = 1 
+            GROUP BY `month` ASC";
+    $result = mysqli_query($conn, $query) or mysqli_error($conn);
+    $count = mysqli_num_rows($result);
+    $arrayFil = array();
+
+    while($rows = mysqli_fetch_assoc($result)){
+    $arrayFil[] = $rows['totalBook'];
+    }
+    $data = array();
+    $arrayFil = array_filter($arrayFil);
+    if(count($arrayFil)){
+    $bookAve = array_sum($arrayFil) / count($arrayFil);
+    }
+    $bookingAve = round($bookAve);
+    $data = [
+        'rows' => $rows,
+        'bookingAve' => $bookingAve
+    ];
+    if($count>0){
+        return $data;
+    }else{
+        return false;
+    }
+}
+//PAGINATION
+
+function pageLinks ($totalpages, $currentpage, $pagesize, $sortLinks) {
+	$page = 1;
+	$pageLinks = "";
+  $pageURL = str_replace(".php","",$_SERVER['PHP_SELF']);
+  $adjacents = "2"; 
+  $secondLastPage = $totalpages-1;
+
+  if($_GET['page'] <= 1){ 
+    $disabled = 'disabled';
+  }else{
+    $disabled = '';
+    $pagePrev = $_GET['page']-1; 
+  }
+  // Declaration of Bootstrap Pagination
+  $pageLinks .= '
+              <nav aria-label="...">
+                <ul class="pagination">
+                  <li class="page-item '.$disabled.'">
+                    <a class="page-link" href="'.$pageURL.'?page='.$pagePrev.'&crypted='.$_GET['crypted'].$sortLinks.'">Previous</a>
+                  </li>
+  ';
+  // Proceed on printing the page numbers
+  //  check if totalpages <=10
+  if($totalpages <= 10){
+    
+    for($page; $page <= $totalpages; $page++){
+      if($page == $currentpage){
+        //declare the active page number
+        $pageLinks .= '<li class="page-item active" aria-current="page">
+                        <span class="page-link">
+                          '.$page.'
+                         </span>
+                      </li> 
+        ';
+      }else{
+        // print the other page numbers
+        $pageLinks .= '<li class="page-item">
+            <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'].$sortLinks;
+        $pageLinks .= '">'.$page.'</a></li>';
+      }
+    }
+  }elseif ($totalpages > 10){
+    if($currentpage <= 4){
+      for ($page = 1; $page < 8; $page++){		 
+				if($page == $currentpage){
+          //declare the active page number
+          $pageLinks .= '<li class="page-item active" aria-current="page">
+                          <span class="page-link">
+                            '.$page.'
+                           </span>
+                        </li> 
+          ';
+        }else{
+          // print the other page numbers
+          $pageLinks .= '<li class="page-item">
+              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'].$sortLinks;
+          $pageLinks .= '">'.$page.'</a></li>';
+        }                
+      }
+      //Add ending numbers
+      $pageLinks .='
+              <li class="page-item"> <a class="page-link"> ... </a></li>
+              <li class="page-item">
+                <a class="page-link" href="'.$pageURL.'?page='.$secondLastPage.'&crypted='.$_GET['crypted'].$sortLinks.'">'.$secondLastPage.'</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].$sortLinks.'">'.$totalpages.'</a>
+              </li>
+      ';
+    }
+    elseif($currentpage > 4 && $currentpage < $totalpages - 4){
+      //print page 1 and 2 and ...
+      $pageLinks .= '<li class="page-item">
+              <a class= "page-link" href="'.$pageURL.'?page=1&crypted='.$_GET['crypted'].$sortLinks.'">1</a>
+            </li>
+            <li class="page-item">
+              <a class= "page-link" href="'.$pageURL.'?page=2&crypted='.$_GET['crypted'].$sortLinks.'">2</a>
+            </li>
+            <li class="page-item">
+              <a class= "page-link">...</a>
+            </li>
+            ';
+      //make a for loop
+      for ($page = $currentpage - $adjacents; $page <= $currentpage + $adjacents; $page++) {			
+        if($page == $currentpage){
+          //declare the active page number
+          $pageLinks .= '<li class="page-item active" aria-current="page">
+                          <span class="page-link">
+                            '.$page.'
+                           </span>
+                        </li> 
+          ';
+        }else{
+          // print the other page numbers
+          $pageLinks .= '<li class="page-item">
+              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'].$sortLinks;
+          $pageLinks .= '">'.$page.'</a></li>';
+        }                
+      }
+      //Add ending numbers
+      $pageLinks .='
+              <li class="page-item"> <a class="page-link"> ... </a></li>
+              <li class="page-item">
+                <a class="page-link" href="'.$pageURL.'?page='.$secondLastPage.'&crypted='.$_GET['crypted'].$sortLinks.'">'.$secondLastPage.'</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].$sortLinks.'">'.$totalpages.'</a>
+              </li>
+      ';      
+    }
+    else{
+      $pageLinks .= '<li class="page-item">
+          <a class= "page-link" href="'.$pageURL.'?page=1&crypted='.$_GET['crypted'].$sortLinks.'">1</a>
+        </li>
+        <li class="page-item">
+          <a class= "page-link" href="'.$pageURL.'?page=2&crypted='.$_GET['crypted'].$sortLinks.'">2</a>
+        </li>
+        <li class="page-item">
+          <a class= "page-link">...</a>
+        </li>
+      ';
+      //make a for loop
+      for ($page = $totalpages - 6; $page <= $totalpages; $page++) {
+        if($page == $currentpage){
+          //declare the active page number
+          $pageLinks .= '<li class="page-item active" aria-current="page">
+                          <span class="page-link">
+                            '.$page.'
+                           </span>
+                        </li> 
+          ';
+        }else{
+          // print the other page numbers
+          $pageLinks .= '<li class="page-item">
+              <a class="page-link" href="'.$pageURL.'?page='.$page.'&crypted='.$_GET['crypted'].$sortLinks;
+          $pageLinks .= '">'.$page.'</a></li>';
+        }                
+      }  
+    }
+  }
+  
+  // Ending the pagination with Next Button
+  if($_GET['page'] >= $totalpages || $totalpages < 2){
+    $nextDisabled = 'disabled';
+  }else{
+    $nextDisabled = '';
+    $pageNext = $_GET['page']+1; 
+  }
+
+  $pageLinks .='
+          <li class="page-item '.$nextDisabled.'">
+             <a class="page-link" href="'.$pageURL.'?page='.$pageNext.'&crypted='.$_GET['crypted'].$sortLinks.'">Next</a>
+          </li>
+          <li class="page-item '.$nextDisabled.'">
+             <a class="page-link" href="'.$pageURL.'?page='.$totalpages.'&crypted='.$_GET['crypted'].$sortLinks.'">Last</a>
+          </li>
+        </ul>
+      </nav>
+  ';
+  //PRINTING OUT THE LAST BUTTON.
+	if ($totalpages == 0) {
+		return "Page 1";
+	} else {
+		return $pageLinks;
+	}
+}
+// END OF PAGINATION
+
 ?>

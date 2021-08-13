@@ -8,10 +8,9 @@ $id = $getUserData['id'];
 $user_type = $getUserData['user_type'];
 $name = $getUserData['name'];
 $username = $getUserData['username'];
-$usertype = $getUserData['user_type'];
 
 checkIfLogIn($id, $routes);
-checkIfAdmin($id, $usertype, $routes);
+checkIfAdmin($id, $user_type, $routes);
 
 if(isset($_GET['cat'])){
   $cat = $_GET['cat'];
@@ -30,7 +29,7 @@ include_once('../../layout/header.php');
     <?php
     //showing which is active
     $parentSub = 'manage content'; 
-    if($usertype == 1){
+    if($user_type == 1){
       include_once('../../layout/sidebar-admin.php');
     }else{
       include_once('../../layout/sidebar.php');

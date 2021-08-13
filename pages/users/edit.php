@@ -13,12 +13,21 @@ $pageURL = str_replace(".php","",$_SERVER['PHP_SELF']);
 checkIfLogIn($id, $routes);
 checkIfAdmin($id, $user_type, $routes);
 
-// POST Create                    
-if($_POST['createUser']){
-                      
+// POST Create
+if(isset($_GET['id'])){
+  $query = "SELECT * FROM user_account  WHERE id = '".$_GET['id']."' limit 1";
+  $result = mysqli_query($conn, $query);
+  while($row=mysqli_fetch_array($result)) {
+    $formUname = $row['username'];
+    $userType = $row['user_type'];
+    $formName  = $row['name'];
+  }
+}
+
+if($_POST['editUser']){        
   $formUname = $_POST['username'];
   $formName = $_POST['name'];
-  $formUtype = $_POST['user_type'];
+  $userType = $_POST['user_type'];
   $err = '';
   $msg = '';
 
@@ -47,16 +56,13 @@ if($_POST['createUser']){
       mysqli_query($conn, "INSERT INTO user_account (username,password,user_type,name,email,contact_no) value ('".$_POST['username']."','".$_POST['password']."','".$_POST['user_type']."','".$_POST['name']."','".$_POST['email']."','".$_POST['contact']."')") or mysqli_error($conn);
       $err = $_POST['username'].' account has been created. Click <a href="'.$routes['users'].'">here to see the list</a>';
       $msg = 'success';
-      $formUname = '';
-      $formName = '';
-      $formUtype = '';
     } else {
       $err = 'Password must be Alpha Numeric';
       $msg = 'error';
     }
-  }
-  
+  } 
 }
+
 
 // Declare the header title.
 $headerTitle = 'Users Section';
@@ -136,14 +142,14 @@ include_once('../../layout/header.php');
                             <div class="form-group">
                             <select class="form-control" id="userType" name="user_type">
                               <?php 
-                              if(isset($formUtype)){
-                                if($formUtype == '0'){
+                              if(isset($userType)){
+                                if($userType == 0){
                                   $value = 0;
                                   $desc = 'Residents';
-                                }else if($formUtype == '1'){
+                                }else if($userType == 1){
                                   $value = 1;
                                   $desc = 'Managers';
-                                }else if($formUtype == '2'){
+                                }else if($userType==2){
                                   $value = 2;
                                   $desc = 'Club';
                                 }else{
@@ -212,7 +218,7 @@ include_once('../../layout/header.php');
                         <div class="row">
                           <div class="col-sm-6">
                             <input type="hidden" name="crypted" value="<?php echo $_GET['crypted']; ?>">
-                            <input class="btn btn-success" type="submit" name="createUser" value="Create">
+                            <input class="btn btn-success" type="submit" name="editUser" value="Update">
                             <a class="btn btn-danger" href="<?php echo $routes['users'];?>">Cancel</a>
                           </div>
                         </div>
